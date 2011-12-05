@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <title>Markdown Editor</title>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+  <script type="text/javascript" src="showdown.min.js"></script>
+  <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+  <style>
+    html, body { background-color: #eee; }
+    body { padding-top: 40px; }
+    div#output { background-color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="fill">
+      <div class="container">
+        <a class="brand" href="#">Markdown Editor</a>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="span8">
+        <textarea id="input" class="span8" rows="40"></textarea>
+      </div>
+      <div id="output" class="span8"></div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    var converter = new Showdown.converter();
+    var refresh_output = function () {
+      $('#output').html(converter.makeHtml($('#input').val()));
+    }; 
+    $(function () {
+      $('#input').change(refresh_output);
+      $('#input').keyup(refresh_output);
+      $('#input').keydown(refresh_output);
+    });
+  </script>
+</body>
+</html>
+
