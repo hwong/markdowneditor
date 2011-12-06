@@ -16,6 +16,11 @@
     <div class="fill">
       <div class="container">
         <a class="brand" href="#">Markdown Editor</a>
+        <ul class="nav">
+          <li>
+            <input type="file" id="file" name="file" />
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -32,10 +37,31 @@
     var refresh_output = function () {
       $('#output').html(converter.makeHtml($('#input').val()));
     }; 
+    var open_file = function (evt) {
+      var files = evt.target.files; // FileList object
+      console.log('filename: ' + files[0].name);
+      var reader = new FileReader();
+      reader.onabort = function () {
+        console.log('aborted');
+      };
+      reader.onerror = function (evt) { 
+        console.log('errored:' + this.error.code);
+      };
+      reader.onload = function () {
+        console.log('loaded'); 
+      };
+      reader.onloadend = function (evt) {
+        $('#input').val(this.result);
+        refresh_output();
+      };
+      reader.readAsText(files[0]);
+    }
+
     $(function () {
       $('#input').change(refresh_output);
       $('#input').keyup(refresh_output);
       $('#input').keydown(refresh_output);
+      $('#file').change(open_file);
     });
   </script>
 </body>
