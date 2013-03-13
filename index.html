@@ -1,69 +1,119 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Markdown Editor</title>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
-  <script type="text/javascript" src="showdown.min.js"></script>
-  <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
-  <style>
-    html, body { background-color: #eee; }
-    body { padding-top: 40px; }
-    div#output { background-color: #fff; }
-  </style>
+<title>Markdown Editor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/bootstrap-2.3.1.min.css">
+<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="js/showdown-2e102c72b26708147817f8f5e4ab1161a38a57a0.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-2.3.1.min.js"></script>
+<style>
+  html, body { background-color: #eee; }
+  body { padding-top: 60px; }
+  div#output { background-color: #fff; }
+</style>
 </head>
 <body>
-  <div class="topbar">
-    <div class="fill">
-      <div class="container">
-        <a class="brand" href="#">Markdown Editor</a>
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="#">Markdown Editor</a>
+      <div class="nav-collapse collapse">
         <ul class="nav">
-          <li>
-            <input type="file" id="file" name="file" />
-          </li>
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><input type="file" id="file" name="file"></li>
         </ul>
-      </div>
+        <form class="form-inline">
+          <label class="checkbox">
+            <input id="side-by-side-preview-option" type="checkbox" checked> Enable side-by-side preview
+          </label>
+          <button id="preview" type="submit" class="btn">Preview</button>
+          <button id="save" type="submit" class="btn">Save</button>
+        </form>
+      </div><!--/.nav-collapse -->
     </div>
   </div>
-  <div class="container">
-    <div class="row">
-      <div class="span8">
-        <textarea id="input" class="span8" rows="40"></textarea>
-      </div>
-      <div id="output" class="span8"></div>
-    </div>
-  </div>
-  <script type="text/javascript">
-    var converter = new Showdown.converter();
-    var refresh_output = function () {
-      $('#output').html(converter.makeHtml($('#input').val()));
-    }; 
-    var open_file = function (evt) {
-      var files = evt.target.files; // FileList object
-      console.log('filename: ' + files[0].name);
-      var reader = new FileReader();
-      reader.onabort = function () {
-        console.log('aborted');
-      };
-      reader.onerror = function (evt) { 
-        console.log('errored:' + this.error.code);
-      };
-      reader.onload = function () {
-        console.log('loaded'); 
-      };
-      reader.onloadend = function (evt) {
-        $('#input').val(this.result);
-        refresh_output();
-      };
-      reader.readAsText(files[0]);
-    }
+</div>
 
-    $(function () {
-      $('#input').change(refresh_output);
-      $('#input').keyup(refresh_output);
-      $('#input').keydown(refresh_output);
-      $('#file').change(open_file);
-    });
-  </script>
+<div class="container">
+  <div class="row">
+    <textarea id="input" rows="40"></textarea>
+    <div id="output"></div>
+  </div>
+</div> <!-- /container -->
+
+<div id="myModal" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Modal header</h3>
+  </div>
+  <div id="modal-output" class="modal-body"></div>
+  <div class="modal-footer">
+    <a href="#" class="btn">Close</a>
+    <a href="#" class="btn btn-primary">Save changes</a>
+  </div>
+</div>
+
+<script type="text/javascript">
+var converter = new Showdown.converter();
+var refresh_output = function () {
+  $('#output').html(converter.makeHtml($('#input').val()));
+  $('#modal-output').html(converter.makeHtml($('#input').val()));
+}; 
+var open_file = function (evt) {
+  var files = evt.target.files; // FileList object
+  console.log('filename: ' + files[0].name);
+  var reader = new FileReader();
+  reader.onabort = function () {
+    console.log('aborted');
+  };
+  reader.onerror = function (evt) { 
+    console.log('errored:' + this.error.code);
+  };
+  reader.onload = function () {
+    console.log('loaded'); 
+  };
+  reader.onloadend = function (evt) {
+    $('#input').val(this.result);
+    refresh_output();
+  };
+  reader.readAsText(files[0]);
+}
+
+$(function () {
+  $('#input').change(refresh_output);
+  $('#input').keyup(refresh_output);
+  $('#input').keydown(refresh_output);
+  $('#file').change(open_file);
+
+  $('#preview').click(function () {
+    console.log("clicked preview");
+    $('#myModal').modal();
+  });
+
+  $('#side-by-side-preview-option').change(function () {
+    if($(this).is(':checked')){
+      $('#output').show();
+    } else {
+      $('#output').hide();
+    }
+  });
+
+  $('#save').click(function () {
+    var content = $('#input').val();
+    var uriContent = "data:application/octet-stream," + encodeURIComponent(content);
+    var newWindow = window.open(uriContent, 'neuesDokument');
+  });
+
+});
+</script>
 </body>
 </html>
 
