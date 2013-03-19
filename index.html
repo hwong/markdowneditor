@@ -11,6 +11,8 @@
   html, body { background-color: #eee; }
   body { padding-top: 60px; }
   div#output { background-color: #fff; }
+  textarea { box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; }
+  textarea#input { width: 100%; }
 </style>
 </head>
 <body>
@@ -26,17 +28,13 @@
       <div class="nav-collapse collapse">
         <ul class="nav">
           <li class="active"><a href="#">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact</a></li>
           <li><input type="file" id="file" name="file"></li>
         </ul>
-        <form class="form-inline">
           <label class="checkbox">
             <input id="side-by-side-preview-option" type="checkbox" checked> Enable side-by-side preview
           </label>
-          <button id="preview" type="submit" class="btn">Preview</button>
-          <button id="save" type="submit" class="btn">Save</button>
-        </form>
+          <button id="preview" class="btn">Preview</button>
+          <button id="save" class="btn">Save</button>
       </div><!--/.nav-collapse -->
     </div>
   </div>
@@ -44,20 +42,23 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="input" rows="40"></textarea>
-    <div id="output"></div>
+    <div id="inputwrapper" class="span6">
+      <textarea id="input" rows="30"></textarea>
+    </div>
+    <div id="outputwrapper" class="span6">
+      <div id="output"></div>
+    </div>
   </div>
 </div> <!-- /container -->
 
 <div id="myModal" class="modal hide fade">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3>Modal header</h3>
+    <h3>Preview</h3>
   </div>
   <div id="modal-output" class="modal-body"></div>
   <div class="modal-footer">
-    <a href="#" class="btn">Close</a>
-    <a href="#" class="btn btn-primary">Save changes</a>
+    <button id="close-modal" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</a>
   </div>
 </div>
 
@@ -95,14 +96,16 @@ $(function () {
 
   $('#preview').click(function () {
     console.log("clicked preview");
+    refresh_output();
     $('#myModal').modal();
   });
-
   $('#side-by-side-preview-option').change(function () {
     if($(this).is(':checked')){
-      $('#output').show();
+      $('#outputwrapper').show();
+      $('#inputwrapper').removeClass('span6 span12').addClass('span6');
     } else {
-      $('#output').hide();
+      $('#outputwrapper').hide();
+      $('#inputwrapper').removeClass('span6 span12').addClass('span12');
     }
   });
 
